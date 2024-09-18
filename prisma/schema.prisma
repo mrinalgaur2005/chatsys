@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id String @id @default(uuid())
+  userId String @unique
+  name String
+  imageUrl String @db.Text
+  email String @db.Text
+
+  ticketsPurchased Tickets[] @relation("Buyer")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TicketType {
+  CHILD
+  ADULT
+  FOREIGNER
+}
+
+model Tickets {
+  id String @id @default(uuid())
+
+  type TicketType @default(ADULT)
+
+  name String
+  amount Int
+  ticketAvailable Int
+
+  addedById String
+  addedBy Admin @relation("Owner", fields: [addedById], references: [email], onDelete: Cascade)
+
+  purchasedById String
+  purchasedBy Profile @relation("Buyer", fields: [purchasedById], references: [id], onDelete: Cascade)
+
+  @@index([addedById])
+  @@index([purchasedById])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin {
+  email String @id // Changed to @id to be the unique identifier
+  name String
+  password String
+
+  ticketsAdded Tickets[] @relation("Owner")
+}
