@@ -3,27 +3,31 @@ import axios from 'axios';
 
 const App = () => {
   const steps = [
-    "What's your name(last name and middle name are optional)?",
-    "What's your departure date?",
+    "What's your name (last name and middle name are optional)?",
+    "What's your booking date?",
     "Where is your destination?",
     "How many tickets do you want to book?",
   ];
+  
   const prompt_arr = [
     "What's your full name? (Middle and last name are optional)?",
-    "When is your departure date?(Please provide the month and day; the year is optional if it's this year)",
+    "When is your booking date? (Please provide the month and day; the year is optional if it's this year)",
     "Where are you traveling to? (Please specify the city or country)",
     "How many tickets would you like to book? (Please enter a number)",
   ];
+
   const [messages, setMessages] = useState([
     { text: "Hello! I'm here to help you book tickets. Let's get started. What's your name?", fromBot: true },
   ]);
-  const [currentStep, setCurrentStep] = useState(0); 
+  
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
-    departureDate: '',
+    bookingDate: '',
     destination: '',
     tickets: '',
   });
+  
   const [userInput, setUserInput] = useState('');
   
   const handleUserInput = (e) => {
@@ -32,6 +36,7 @@ const App = () => {
 
   const validateUserInput = async (input, step) => {
     const prompt = `The current step is asking for: ${prompt_arr[step]}. The user responded with: "${input}". Is this a valid response? If not, say "invalid". Also give explanation. Make the criteria loose.`;
+    
     const data = {
       "model": "gpt-3.5-turbo-0125",
       "messages": [
@@ -45,7 +50,7 @@ const App = () => {
         }
       ]
     };
-  
+
     try {
       const response = await axios({
         method: 'post',
@@ -56,12 +61,12 @@ const App = () => {
         },
         data: JSON.stringify(data)
       });
-  
+
       console.log(response.data);
       return !response.data.choices[0].message.content.toLowerCase().includes("invalid");
     } catch (error) {
       console.error('Error:', error);
-      throw error;
+      throw error; 
     }
   };
 
@@ -83,7 +88,7 @@ const App = () => {
           updatedFormData.name = userInput;
           break;
         case 1:
-          updatedFormData.departureDate = userInput;
+          updatedFormData.bookingDate = userInput;
           break;
         case 2:
           updatedFormData.destination = userInput;
@@ -113,7 +118,7 @@ const App = () => {
             ...prevMessages,
             { text: "Thank you! Here's the information you provided:", fromBot: true },
             { text: `Name: ${updatedFormData.name}`, fromBot: true },
-            { text: `Departure Date: ${updatedFormData.departureDate}`, fromBot: true },
+            { text: `Booking Date: ${updatedFormData.bookingDate}`, fromBot: true },
             { text: `Destination: ${updatedFormData.destination}`, fromBot: true },
             { text: `Tickets: ${updatedFormData.tickets}`, fromBot: true },
             { text: "We'll now process your booking!", fromBot: true },
@@ -171,7 +176,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    backgroundColor:'#E1CCB1',
+    backgroundColor: '#E1CCB1',
   },
   chatBox: {
     width: '400px',
