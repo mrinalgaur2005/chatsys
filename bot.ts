@@ -5,35 +5,33 @@ const App = () => {
   const steps = [
     "What's your name(last name and middle name are optional)?",
     "What's your departure date?",
-    "What's your Email address?",
     "Where is your destination?",
     "How many tickets do you want to book?",
   ];
-  const prompt_arr=[
+  const prompt_arr = [
     "What's your full name? (Middle and last name are optional)?",
     "When is your departure date?(Please provide the month and day; the year is optional if it's this year)",
-    "What's your email address? (We'll use this to send booking details)",
     "Where are you traveling to? (Please specify the city or country)",
     "How many tickets would you like to book? (Please enter a number)",
-  ]
+  ];
   const [messages, setMessages] = useState([
-    { text: "Hello! I'm here to help you book tickets. Let's get started.What's your name?", fromBot: true },
+    { text: "Hello! I'm here to help you book tickets. Let's get started. What's your name?", fromBot: true },
   ]);
   const [currentStep, setCurrentStep] = useState(0); 
   const [formData, setFormData] = useState({
     name: '',
     departureDate: '',
-    email: '',
     destination: '',
     tickets: '',
   });
   const [userInput, setUserInput] = useState('');
+  
   const handleUserInput = (e) => {
     setUserInput(e.target.value);
   };
 
   const validateUserInput = async (input, step) => {
-    const prompt = `The current step is asking for: ${prompt_arr[step]}. The user responded with: "${input}". Is this a valid response? If not, say "invalid".Also give explanation.Make the criteria loose`;
+    const prompt = `The current step is asking for: ${prompt_arr[step]}. The user responded with: "${input}". Is this a valid response? If not, say "invalid". Also give explanation. Make the criteria loose.`;
     const data = {
       "model": "gpt-3.5-turbo-0125",
       "messages": [
@@ -63,9 +61,10 @@ const App = () => {
       return !response.data.choices[0].message.content.toLowerCase().includes("invalid");
     } catch (error) {
       console.error('Error:', error);
-      throw error; // Optionally rethrow the error for further handling
+      throw error;
     }
   };
+
   const handleSend = async () => {
     if (!userInput.trim()) return;
 
@@ -87,12 +86,9 @@ const App = () => {
           updatedFormData.departureDate = userInput;
           break;
         case 2:
-          updatedFormData.email = userInput;
-          break;
-        case 3:
           updatedFormData.destination = userInput;
           break;
-        case 4:
+        case 3:
           updatedFormData.tickets = userInput;
           break;
         default:
@@ -118,7 +114,6 @@ const App = () => {
             { text: "Thank you! Here's the information you provided:", fromBot: true },
             { text: `Name: ${updatedFormData.name}`, fromBot: true },
             { text: `Departure Date: ${updatedFormData.departureDate}`, fromBot: true },
-            { text: `Email: ${updatedFormData.email}`, fromBot: true },
             { text: `Destination: ${updatedFormData.destination}`, fromBot: true },
             { text: `Tickets: ${updatedFormData.tickets}`, fromBot: true },
             { text: "We'll now process your booking!", fromBot: true },
@@ -186,9 +181,9 @@ const styles = {
     boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     display: 'flex',
     backgroundImage: 'url("https://i.pinimg.com/564x/74/c7/07/74c707db416ed040c5af26e8e437d818.jpg")',
-    backgroundSize: 'cover', // Ensures the image covers the entire area
-    backgroundPosition: 'center', // Centers the image in the chatbox
-    backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     flexDirection: 'column',
   },
   messages: {
