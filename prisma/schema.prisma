@@ -41,8 +41,8 @@ model Tickets {
   amount Int
   ticketAvailable Int
 
-  addedById String
-  addedBy Admin @relation("Owner", fields: [addedById], references: [email], onDelete: Cascade)
+  addedById String?
+  addedBy Admin? @relation("Owner", fields: [addedById], references: [email], onDelete: Cascade)
 
   purchasedById String
   purchasedBy Profile @relation("Buyer", fields: [purchasedById], references: [id], onDelete: Cascade)
